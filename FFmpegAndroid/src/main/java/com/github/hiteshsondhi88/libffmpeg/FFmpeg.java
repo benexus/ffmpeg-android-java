@@ -3,11 +3,11 @@ package com.github.hiteshsondhi88.libffmpeg;
 import android.content.Context;
 import android.text.TextUtils;
 
-import java.lang.reflect.Array;
-import java.util.Map;
-
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
 import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegNotSupportedException;
+
+import java.lang.reflect.Array;
+import java.util.Map;
 
 @SuppressWarnings("unused")
 public class FFmpeg implements FFmpegInterface {
@@ -38,16 +38,11 @@ public class FFmpeg implements FFmpegInterface {
         String cpuArchNameFromAssets = null;
         switch (CpuArchHelper.getCpuArch()) {
             case x86:
-                Log.i("Loading FFmpeg for x86 CPU");
-                cpuArchNameFromAssets = "x86";
-                break;
+            case ARMv7_NEON:
+                Log.w("FFmpeg is not available for the device's CPU architecture, but a fallback binary is available");
             case ARMv7:
                 Log.i("Loading FFmpeg for armv7 CPU");
                 cpuArchNameFromAssets = "armeabi-v7a";
-                break;
-            case ARMv7_NEON:
-                Log.i("Loading FFmpeg for armv7-neon CPU");
-                cpuArchNameFromAssets = "armeabi-v7a-neon";
                 break;
             case NONE:
                 throw new FFmpegNotSupportedException("Device not supported");
