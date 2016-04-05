@@ -10,11 +10,13 @@ class FFmpegLoadLibraryAsyncTask extends AsyncTask<Void, Void, Boolean> {
     private final String cpuArchNameFromAssets;
     private final FFmpegLoadBinaryResponseHandler ffmpegLoadBinaryResponseHandler;
     private final Context context;
+    private final String url;
 
-    FFmpegLoadLibraryAsyncTask(Context context, String cpuArchNameFromAssets, FFmpegLoadBinaryResponseHandler ffmpegLoadBinaryResponseHandler) {
+    FFmpegLoadLibraryAsyncTask(Context context, String cpuArchNameFromAssets, FFmpegLoadBinaryResponseHandler ffmpegLoadBinaryResponseHandler, String url) {
         this.context = context;
         this.cpuArchNameFromAssets = cpuArchNameFromAssets;
         this.ffmpegLoadBinaryResponseHandler = ffmpegLoadBinaryResponseHandler;
+        this.url = url;
     }
 
     @Override
@@ -27,6 +29,15 @@ class FFmpegLoadLibraryAsyncTask extends AsyncTask<Void, Void, Boolean> {
             boolean isFileCopied = FileUtils.copyBinaryFromAssetsToData(context,
                     cpuArchNameFromAssets + File.separator + FileUtils.ffmpegFileName,
                     FileUtils.ffmpegFileName);
+            if(!isFileCopied) {
+                if(url == null) {
+                    Log.e("Can't download binaries because URL was not set. Please call setUrl() on your FFmpeg instance.");
+                    return false;
+                }
+                // Download from url
+                String binaryUrl = url + File.separator + cpuArchNameFromAssets + File.separator + FileUtils.ffmpegFileName;
+                isFileCopied = FileUtils.copyBinaryFromUrl(context, binaryUrl, FileUtils.ffmpegFileName);
+            }
 
             // make file executable
             if (isFileCopied) {

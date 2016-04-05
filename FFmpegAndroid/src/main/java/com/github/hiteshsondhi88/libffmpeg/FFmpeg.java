@@ -20,6 +20,7 @@ public class FFmpeg implements FFmpegInterface {
     private long timeout = Long.MAX_VALUE;
 
     private static FFmpeg instance = null;
+    private String url;
 
     private FFmpeg(Context context) {
         this.context = context.getApplicationContext();
@@ -31,6 +32,10 @@ public class FFmpeg implements FFmpegInterface {
             instance = new FFmpeg(context);
         }
         return instance;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     @Override
@@ -54,7 +59,7 @@ public class FFmpeg implements FFmpegInterface {
         }
 
         if (!TextUtils.isEmpty(cpuArchNameFromAssets)) {
-            ffmpegLoadLibraryAsyncTask = new FFmpegLoadLibraryAsyncTask(context, cpuArchNameFromAssets, ffmpegLoadBinaryResponseHandler);
+            ffmpegLoadLibraryAsyncTask = new FFmpegLoadLibraryAsyncTask(context, cpuArchNameFromAssets, ffmpegLoadBinaryResponseHandler, url);
             ffmpegLoadLibraryAsyncTask.execute();
         } else {
             throw new FFmpegNotSupportedException("Device not supported");

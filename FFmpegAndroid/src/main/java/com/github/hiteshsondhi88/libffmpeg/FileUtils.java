@@ -8,6 +8,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Formatter;
@@ -41,7 +45,7 @@ class FileUtils {
 			
 			return true;
 		} catch (IOException e) {
-			Log.e("issue in coping binary from assets to data. ", e);
+			Log.e("issue in coping binary from assets to data. ");
 		}
         return false;
 	}
@@ -101,5 +105,25 @@ class FileUtils {
             Util.close(is);
         }
         return null;
+    }
+
+    public static boolean copyBinaryFromUrl(Context context, String binaryUrl, String outputFilename) {
+        Log.i("copy from url: " + binaryUrl);
+        try {
+            URL website = new URL(binaryUrl);
+            ReadableByteChannel rbc = Channels.newChannel(website.openStream());
+            File filesDirectory = getFilesDirectory(context);
+            FileOutputStream fos = new FileOutputStream(new File(filesDirectory, outputFilename));
+            long count;
+            int offset = 0;
+            while ((count = fos.getChannel().transferFrom(rbc, offset, DEFAULT_BUFFER_SIZE)) > 0)
+            {
+                offset += count;
+            }
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
