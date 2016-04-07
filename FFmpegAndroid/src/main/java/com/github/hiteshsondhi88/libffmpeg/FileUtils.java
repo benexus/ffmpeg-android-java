@@ -126,4 +126,11 @@ class FileUtils {
         }
         return false;
     }
+
+    public static void deleteBinary(Context context) {
+        File binary = new File(getFilesDirectory(context), ffmpegFileName);
+        if(binary.exists()) {
+            binary.delete();
+        }
+    }
 }

@@ -67,6 +67,12 @@ public class FFmpeg implements FFmpegInterface {
     }
 
     @Override
+    public void reloadBinary(FFmpegLoadBinaryResponseHandler ffmpegLoadBinaryResponseHandler) throws FFmpegNotSupportedException {
+        FileUtils.deleteBinary(context);
+        loadBinary(ffmpegLoadBinaryResponseHandler);
+    }
+
+    @Override
     public void execute(Map<String, String> environvenmentVars, String[] cmd, FFmpegExecuteResponseHandler ffmpegExecuteResponseHandler) throws FFmpegCommandAlreadyRunningException {
         if (ffmpegExecuteAsyncTask != null && !ffmpegExecuteAsyncTask.isProcessCompleted()) {
             throw new FFmpegCommandAlreadyRunningException("FFmpeg command is already running, you are only allowed to run single command at a time");
@@ -107,11 +113,6 @@ public class FFmpeg implements FFmpegInterface {
         }
         // if unable to find version then return "" to avoid NPE
         return "";
-    }
-
-    @Override
-    public String getLibraryFFmpegVersion() {
-        return context.getString(R.string.shipped_ffmpeg_version);
     }
 
     @Override

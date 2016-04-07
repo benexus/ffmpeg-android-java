@@ -40,12 +40,6 @@ interface FFmpegInterface {
     public String getDeviceFFmpegVersion() throws FFmpegCommandAlreadyRunningException;
 
     /**
-     * Tells FFmpeg version shipped with current library
-     * @return FFmpeg version shipped with Library
-     */
-    public String getLibraryFFmpegVersion();
-
-    /**
      * Checks if FFmpeg command is Currently running
      * @return true if FFmpeg command is running
      */
@@ -63,4 +57,8 @@ interface FFmpegInterface {
      */
     public void setTimeout(long timeout);
 
+    /**
+     * Reload binary. This will force re-downloading
+     */
+    public void reloadBinary(FFmpegLoadBinaryResponseHandler ffmpegLoadBinaryResponseHandler) throws FFmpegNotSupportedException;
 }

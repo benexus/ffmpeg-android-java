@@ -69,6 +69,8 @@ class FFmpegLoadLibraryAsyncTask extends AsyncTask<Void, Void, Boolean> {
     }
 
     private boolean isDeviceFFmpegVersionOld() {
-        return CpuArch.fromString(FileUtils.SHA1(FileUtils.getFFmpeg(context))).equals(CpuArch.NONE);
+        // Since binaries are not bundled anymore, there is no point in checking if they are old
+        return false;
+        // return CpuArch.fromString(FileUtils.SHA1(FileUtils.getFFmpeg(context))).equals(CpuArch.NONE);
     }
 }
