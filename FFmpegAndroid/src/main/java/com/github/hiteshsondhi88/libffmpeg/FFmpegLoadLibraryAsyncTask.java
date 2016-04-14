@@ -3,6 +3,8 @@ package com.github.hiteshsondhi88.libffmpeg;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.github.hiteshsondhi88.libffmpeg.exceptions.FFmpegCommandAlreadyRunningException;
+
 import java.io.File;
 
 class FFmpegLoadLibraryAsyncTask extends AsyncTask<Void, Void, Boolean> {
@@ -25,7 +27,7 @@ class FFmpegLoadLibraryAsyncTask extends AsyncTask<Void, Void, Boolean> {
         if (ffmpegFile.exists() && isDeviceFFmpegVersionOld() && !ffmpegFile.delete()) {
             return false;
         }
-        if (!ffmpegFile.exists()) {
+        if (!ffmpegFile.exists() || !isFfmpegValidVersion()) {
             boolean isFileCopied = FileUtils.copyBinaryFromAssetsToData(context,
                     cpuArchNameFromAssets + File.separator + FileUtils.ffmpegFileName,
                     FileUtils.ffmpegFileName);
@@ -43,16 +45,15 @@ class FFmpegLoadLibraryAsyncTask extends AsyncTask<Void, Void, Boolean> {
             if (isFileCopied) {
                 if(!ffmpegFile.canExecute()) {
                     Log.d("FFmpeg is not executable, trying to make it executable ...");
-                    if (ffmpegFile.setExecutable(true)) {
-                        return true;
-                    }
+                    ffmpegFile.setExecutable(true);
                 } else {
                     Log.d("FFmpeg is executable");
-                    return true;
                 }
+            } else {
+                ffmpegFile.delete();
             }
         }
-        return ffmpegFile.exists() && ffmpegFile.canExecute();
+        return ffmpegFile.exists() && ffmpegFile.canExecute() && isFfmpegValidVersion();
     }
 
     @Override
@@ -72,5 +73,14 @@ class FFmpegLoadLibraryAsyncTask extends AsyncTask<Void, Void, Boolean> {
         // Since binaries are not bundled anymore, there is no point in checking if they are old
         return false;
         // return CpuArch.fromString(FileUtils.SHA1(FileUtils.getFFmpeg(context))).equals(CpuArch.NONE);
+    }
+
+    private boolean isFfmpegValidVersion() {
+        try {
+            return !FFmpeg.getInstance(context).getDeviceFFmpegVersion().isEmpty();
+        } catch (FFmpegCommandAlreadyRunningException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

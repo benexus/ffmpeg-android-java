@@ -22,6 +22,7 @@ public class DaggerDependencyModule {
 
     @Provides @Singleton
     FFmpeg provideFFmpeg() {
+        FFmpeg.getInstance(context.getApplicationContext()).setUrl(context.getResources().getString(R.string.binaries_url));
         return FFmpeg.getInstance(context.getApplicationContext());
     }
 

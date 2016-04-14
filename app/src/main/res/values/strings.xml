@@ -9,5 +9,6 @@
     <string name="device_not_supported_message">FFmpeg is not supported on your device</string>
     <string name="run">Run</string>
     <string name="empty_command_toast">You cannot execute empty command</string>
+    <string name="binaries_url">https://secure.indiesoftware.com.ar/ffmpeg</string>
 
 </resources>

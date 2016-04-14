@@ -120,6 +120,7 @@ class FileUtils {
             {
                 offset += count;
             }
+            fos.close();
             return true;
         } catch (IOException e) {
             e.printStackTrace();
